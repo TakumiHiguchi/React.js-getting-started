@@ -1,52 +1,71 @@
-import React from 'react'
+import React , { Component } from 'react'
 import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types';
 import './index.css'
 
-const MoneyBook = () =>{
-    const books = [
-                    {date: "1/1",item: "お年玉",amount: 10000},
-                    {date: "1/3",item: "ケーキ",amount: -500},
-                    {date: "2/1",item: "小遣い",amount: 3000},
-                    {date: "2/5",item: "マンガ",amount: -600}
-                    ]
+class JyankenGamePage extends Component {
+    constructor(props){
+        super(props)
+        this.state = {human: null, computer: null}
+    }
+    
+    pon(human_hand){
+        const computer_hand = Math.floor(Math.random() * 3)
+        this.setState({human: human_hand, computer: computer_hand})
+    }
+    judge(){
+        if(this.state.human == null){
+            return null
+        }else{
+            return(this.state.computer - this.state.human  + 3) % 3
+        }
+    }
+    render(){
+        return(
+                <div>
+                    <h1>ジャンケン</h1>
+                    <JyankenBox actionPon={(te) => this.pon(te)} />
+                    <ScoreBox human={this.state.human} computer={this.state.computer} judgment={this.judge()} />
+                </div>
+        )
+    }
+}
+
+const JyankenBox = (props) => {
     return (
-        <div>
-            <h1>お小遣い帳</h1>
-            <table className="book">
-                <thead>
-                    <tr>
-                        <th>日付</th>
-                        <th>項目</th>
-                        <th>入金</th>
-                        <th>出金</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {books.map((book) =>
-                            <MoneyBookItem book={book} key={book.date + book.item} />
-                           )}
-                </tbody>
-            </table>
-        </div>
+            <div>
+                <button onClick={() => props.actionPon(0)}>グー</button>
+                <button onClick={() => props.actionPon(1)}>チョキ</button>
+                <button onClick={() => props.actionPon(2)}>パー</button>
+            </div>
     )
 }
-const MoneyBookItem = (props) => {
-    const {date,item,amount} = props.book
-    return(
-           <tr>
-            <td>{date}</td>
-            <td>{item}</td>
-            <td>{amount >= 0 ? amount : null}</td>
-            <td>{amount < 0 ? -amount : null}</td>
-           </tr>
-    )
+
+JyankenBox.propTypes = {
+    actionPon: PropTypes.func
 }
-MoneyBookItem.propTypes = {
-    book: PropTypes.object.isRequired
+
+const ScoreBox = (props) => {
+        const teString = ["グー","チョキ","パー"]
+        const judgmentString = ["引き分け","勝ち","負け"]
+        return(
+               <table>
+                    <tbody>
+                        <tr><th>あなた</th><td>{teString[props.human]}</td></tr>
+                        <tr><th>Computer</th><td>{teString[props.computer]}</td></tr>
+                        <tr><th>勝敗</th><td>{judgmentString[props.judgment]}</td></tr>
+                    </tbody>
+               </table>
+        )
 }
+
+ScoreBox.propTypes = {
+    human: PropTypes.number,
+    computer: PropTypes.number,
+    judgement: PropTypes.number
+}
+
 ReactDOM.render(
-    <MoneyBook />,
+    <JyankenGamePage />,
     document.getElementById('root')
 )
-

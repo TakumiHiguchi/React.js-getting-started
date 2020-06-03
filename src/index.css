@@ -1,7 +1,4 @@
-.book{
-    border-collapse: collapse;
-}
-.book th, .book td{
-    border:solid 1px;
-    padding:1px 15px;
-}
+div#root{padding: 10px;}
+button{margin:0 10px;}
+table{margin-top: 20px;}
+th{font-weight: 400; text-align: left;}
